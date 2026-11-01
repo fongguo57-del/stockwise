@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 const navItems = [
-  { icon: "▦", label: "Dashboard", href: "/" },
+  { icon: "▦", label: "Dashboard", href: "/dashboard" },
   { icon: "□", label: "Products", href: "/products" },
   { icon: "⇄", label: "Inventory", href: "/stock-movements" },
   { icon: "▤", label: "Sales", href: "/sales" },
@@ -30,8 +30,7 @@ export default function Sidebar() {
 
   return (
     <aside className="flex w-full shrink-0 flex-col bg-slate-950 p-5 text-white md:sticky md:top-0 md:h-screen md:w-64">
-      {/* Logo */}
-      <Link href="/" className="mb-8 flex items-center gap-3">
+      <Link href="/dashboard" className="mb-8 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold">
           S
         </div>
@@ -46,7 +45,6 @@ export default function Sidebar() {
         </div>
       </Link>
 
-      {/* Navigation */}
       <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
         Workspace
       </p>
@@ -57,10 +55,8 @@ export default function Sidebar() {
       >
         {navItems.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname === item.href ||
-                pathname.startsWith(`${item.href}/`);
+            pathname === item.href ||
+            pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
@@ -86,7 +82,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Information panel */}
       <div className="mt-8 rounded-xl border border-slate-800 bg-slate-900 p-4">
         <p className="text-sm font-semibold">StockWise</p>
         <p className="mt-1 text-xs leading-5 text-slate-400">
@@ -95,7 +90,6 @@ export default function Sidebar() {
         </p>
       </div>
 
-      {/* Logout */}
       <div className="mt-6 border-t border-slate-800 pt-5 md:mt-auto">
         <p className="text-xs text-slate-500">
           Inventory &amp; Sales Management

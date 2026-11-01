@@ -28,7 +28,7 @@ export default function LoginPage() {
                     return;
                 }
 
-                router.push("/");
+                router.push("/dashboard");
             } catch {
                 setErrorMessage("Unable to sign in. Please try again.");
             } finally {

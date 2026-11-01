@@ -1,361 +1,352 @@
 
-"use client";
-
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import AuthGuard from "@/components/AuthGuard";
-import Sidebar from "@/components/Sidebar";
 
-type Product = {
-  id: number;
-  sku: string;
-  name: string;
-  price: number;
-  stock_quantity: number;
-  min_stock_level: number;
-};
-
-type Sale = {
-  id: number;
-  order_number: string;
-  status: string;
-  total_amount: number;
-  created_at: string;
-};
-
-function money(value: number) {
-  return new Intl.NumberFormat("en-MY", {
-    style: "currency",
-    currency: "MYR",
-  }).format(value);
-}
-
-function formatDate(value: string) {
-  return new Date(value).toLocaleString("en-MY", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
-function DashboardContent() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [sales, setSales] = useState<Sale[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const loadDashboard = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const [productResult, salesResult] = await Promise.all([
-        supabase
-          .from("products")
-          .select("id, sku, name, price, stock_quantity, min_stock_level")
-          .order("sku", { ascending: true }),
-
-        supabase
-          .from("sales")
-          .select("id, order_number, status, total_amount, created_at")
-          .order("created_at", { ascending: false }),
-      ]);
-
-      if (productResult.error) {
-        throw new Error(productResult.error.message);
-      }
-
-      if (salesResult.error) {
-        throw new Error(salesResult.error.message);
-      }
-
-      setProducts((productResult.data ?? []) as Product[]);
-      setSales((salesResult.data ?? []) as Sale[]);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Unable to load dashboard data."
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void loadDashboard();
-  }, [loadDashboard]);
-
-  const lowStockProducts = products.filter(
-    (product) => product.stock_quantity <= product.min_stock_level
-  );
-
-  const completedSales = sales.filter(
-    (sale) => sale.status === "completed"
-  );
-
-  const totalRevenue = completedSales.reduce(
-    (sum, sale) => sum + Number(sale.total_amount),
-    0
-  );
-
-  const recentSales = sales.slice(0, 5);
-
-  const statCards = [
-    {
-      label: "Total Products",
-      value: loading ? "—" : products.length.toString(),
-      note: "Products in your inventory",
-      icon: "□",
-      iconStyle: "bg-blue-50 text-blue-700",
-    },
-    {
-      label: "Sales Revenue",
-      value: loading ? "—" : money(totalRevenue),
-      note: "Completed sales, all time",
-      icon: "↗",
-      iconStyle: "bg-emerald-50 text-emerald-700",
-    },
-    {
-      label: "Low Stock Items",
-      value: loading ? "—" : lowStockProducts.length.toString(),
-      note: "At or below minimum stock",
-      icon: "!",
-      iconStyle: "bg-amber-50 text-amber-700",
-    },
-    {
-      label: "Sales Orders",
-      value: loading ? "—" : sales.length.toString(),
-      note: "Orders recorded in the system",
-      icon: "▤",
-      iconStyle: "bg-violet-50 text-violet-700",
-    },
-  ];
-
-  return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 md:flex">
-      <Sidebar />
-
-      <section className="min-w-0 flex-1 p-5 md:p-8 lg:p-10">
-        <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-slate-500">
-              Workspace / Dashboard
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight">
-              Dashboard
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Here&apos;s an overview of your shop&apos;s operations.
-            </p>
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <p className="text-xs text-slate-500">Business</p>
-            <p className="text-sm font-semibold">Computer Shop</p>
-          </div>
-        </header>
-
-        {error && (
-          <div
-            role="alert"
-            className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
-          >
-            <p className="font-semibold">Unable to load dashboard</p>
-            <p className="mt-1">{error}</p>
-            <button
-              type="button"
-              onClick={() => void loadDashboard()}
-              className="mt-3 rounded-lg border border-red-300 px-3 py-2 font-medium hover:bg-red-100"
-            >
-              Try again
-            </button>
-          </div>
-        )}
-
-        <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {statCards.map((card) => (
-            <div
-              key={card.label}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-medium text-slate-500">
-                  {card.label}
-                </p>
-                <span
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold ${card.iconStyle}`}
-                >
-                  {card.icon}
-                </span>
-              </div>
-
-              <p className="mt-4 break-words text-2xl font-bold tracking-tight">
-                {card.value}
-              </p>
-              <p className="mt-2 text-xs text-slate-500">
-                {card.note}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
-          <section className="min-w-0 rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-5">
-              <div>
-                <h3 className="font-bold">Recent Sales</h3>
-                <p className="mt-1 text-xs text-slate-500">
-                  Latest recorded transactions
-                </p>
-              </div>
-
-              <Link
-                href="/sales"
-                className="rounded-lg bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100"
-              >
-                View all sales →
-              </Link>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-                  <tr>
-                    <th className="px-5 py-3 font-medium">Order</th>
-                    <th className="px-5 py-3 font-medium">Date</th>
-                    <th className="px-5 py-3 font-medium">Amount</th>
-                    <th className="px-5 py-3 font-medium">Status</th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-slate-100">
-                  {loading ? (
-                    <tr>
-                      <td colSpan={4} className="px-5 py-8 text-center text-slate-500">
-                        Loading sales...
-                      </td>
-                    </tr>
-                  ) : recentSales.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="px-5 py-8 text-center text-slate-500">
-                        No sales recorded yet.
-                        <div className="mt-2">
-                          <Link
-                            href="/sales"
-                            className="font-semibold text-blue-700 hover:underline"
-                          >
-                            Create your first sale
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    recentSales.map((sale) => (
-                      <tr key={sale.id} className="hover:bg-slate-50">
-                        <td className="whitespace-nowrap px-5 py-4 font-medium">
-                          {sale.order_number}
-                        </td>
-                        <td className="whitespace-nowrap px-5 py-4 text-xs text-slate-600">
-                          {formatDate(sale.created_at)}
-                        </td>
-                        <td className="whitespace-nowrap px-5 py-4 font-medium">
-                          {money(Number(sale.total_amount))}
-                        </td>
-                        <td className="whitespace-nowrap px-5 py-4">
-                          <span
-                            className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                              sale.status === "completed"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : sale.status === "pending"
-                                  ? "bg-amber-50 text-amber-700"
-                                  : "bg-slate-100 text-slate-600"
-                            }`}
-                          >
-                            {sale.status.charAt(0).toUpperCase() +
-                              sale.status.slice(1)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-100 p-5">
-              <div>
-                <h3 className="font-bold">Inventory Overview</h3>
-                <p className="mt-1 text-xs text-slate-500">
-                  Products requiring attention
-                </p>
-              </div>
-
-              <Link
-                href="/products"
-                className="text-xs font-semibold text-blue-700 hover:underline"
-              >
-                Products →
-              </Link>
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {loading ? (
-                <p className="p-5 text-sm text-slate-500">
-                  Loading inventory...
-                </p>
-              ) : lowStockProducts.length === 0 ? (
-                <p className="p-5 text-sm text-slate-500">
-                  No low-stock products found.
-                </p>
-              ) : (
-                lowStockProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between gap-3 p-5"
-                  >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold">
-                        {product.name}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        SKU: {product.sku}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {money(Number(product.price))} per unit
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 text-right">
-                      <p className="text-sm font-bold text-red-600">
-                        {product.stock_quantity} units
-                      </p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Minimum: {product.min_stock_level}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </section>
-        </div>
-
-        <footer className="mt-8 text-center text-xs text-slate-400">
-          StockWise · Inventory &amp; Sales Management
-        </footer>
-      </section>
-    </main>
-  );
-}
+const features = [
+  {
+    title: "Product Management",
+    description:
+      "Manage product details, categories, pricing and inventory information in one place.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-7 w-7"
+        aria-hidden="true"
+      >
+        <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+        <path d="m3 8 9 5 9-5" />
+        <path d="M3 8v9l9 5 9-5V8" />
+        <path d="M12 13v9" />
+      </svg>
+    ),
+  },
+  {
+    title: "Inventory Tracking",
+    description:
+      "Monitor stock levels, record stock movements and identify low-stock products.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-7 w-7"
+        aria-hidden="true"
+      >
+        <path d="M4 19V5" />
+        <path d="M4 19h17" />
+        <rect x="7" y="11" width="3" height="5" rx="0.5" />
+        <rect x="13" y="7" width="3" height="9" rx="0.5" />
+        <rect x="19" y="3" width="2" height="13" rx="0.5" />
+      </svg>
+    ),
+  },
+  {
+    title: "Sales Management",
+    description:
+      "Create sales transactions and keep track of your business sales history.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-7 w-7"
+        aria-hidden="true"
+      >
+        <path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" />
+        <circle cx="10" cy="20" r="1" />
+        <circle cx="18" cy="20" r="1" />
+        <path d="M12 6h5" />
+        <path d="M14.5 3.5v5" />
+      </svg>
+    ),
+  },
+  {
+    title: "Business Reports",
+    description:
+      "Review sales performance, revenue and inventory information through reports.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-7 w-7"
+        aria-hidden="true"
+      >
+        <path d="M4 19V5" />
+        <path d="M4 19h17" />
+        <path d="m7 15 4-4 3 2 6-7" />
+        <path d="M16 6h4v4" />
+      </svg>
+    ),
+  },
+];
 
 export default function Home() {
   return (
-    <AuthGuard>
-      <DashboardContent />
-    </AuthGuard>
+    <main className="min-h-screen bg-white text-slate-950">
+      {/* Navigation */}
+      <nav className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5 md:px-16">
+        <h1 className="text-2xl font-extrabold tracking-tight text-blue-800">
+          StockWise
+        </h1>
+
+        <div className="flex items-center gap-6">
+          <a
+            href="#features"
+            className="hidden text-sm font-semibold text-slate-700 transition hover:text-blue-800 sm:block"
+          >
+            Features
+          </a>
+
+          <Link
+            href="/login"
+            style={{ backgroundColor: "#1e3a8a", color: "#ffffff" }}
+            className="rounded-lg px-5 py-2.5 text-sm font-bold transition hover:!bg-blue-950"
+          >
+            Log In
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="overflow-hidden bg-slate-100 px-6 py-20 md:px-16 md:py-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-2">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-blue-800 shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-blue-700" />
+              Inventory & Sales Management
+            </div>
+
+            <h2 className="mt-7 max-w-2xl text-4xl font-extrabold leading-tight tracking-tight text-slate-950 md:text-6xl">
+              Take Control of Your
+              <span className="block text-blue-800">
+                Business Inventory.
+              </span>
+            </h2>
+
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-700 md:text-lg">
+              Manage products, monitor stock levels, record sales and
+              understand your business performance with StockWise —
+              all in one simple workspace.
+            </p>
+
+            <div className="mt-9 flex flex-wrap gap-4">
+              <Link
+                href="/login"
+                style={{ backgroundColor: "#1e3a8a", color: "#ffffff" }}
+                className="inline-flex items-center rounded-xl px-7 py-3.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 hover:!bg-blue-950"
+              >
+                Get Started <span className="ml-2">→</span>
+              </Link>
+
+              <a
+                href="#features"
+                className="rounded-xl border-2 border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 transition hover:border-blue-700 hover:bg-blue-50 hover:text-blue-900"
+              >
+                Explore Features
+              </a>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-700">
+              <span>✓ Product Management</span>
+              <span>✓ Stock Tracking</span>
+              <span>✓ Sales Reports</span>
+            </div>
+          </div>
+
+          {/* Dashboard Preview */}
+          <div className="relative mx-auto w-full max-w-xl">
+            <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-blue-300/60 blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-indigo-300/60 blur-3xl" />
+
+            <div className="relative rounded-2xl border border-slate-300 bg-white p-4 shadow-2xl shadow-slate-400/40 md:p-6">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div>
+                  <p className="text-sm font-extrabold text-slate-950">
+                    StockWise Overview
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-slate-600">
+                    Illustrative dashboard preview
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-bold text-blue-900">
+                  DEMO
+                </div>
+              </div>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold text-slate-600">
+                    Total Products
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-slate-950">
+                    128
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Sample value
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                  <p className="text-xs font-bold text-blue-900">
+                    Sales Revenue
+                  </p>
+                  <p className="mt-2 text-2xl font-extrabold text-slate-950">
+                    RM 8.4k
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-blue-800">
+                    Sample value
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-xl border border-slate-200 p-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-bold text-slate-900">
+                    Inventory Activity
+                  </p>
+                  <span className="text-xs font-semibold text-slate-500">
+                    Demo data
+                  </span>
+                </div>
+
+                <div className="mt-6 flex h-32 items-end gap-3">
+                  {[45, 70, 55, 90, 65, 100, 75].map((height, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-1 items-end"
+                    >
+                      <div
+                        className="w-full rounded-t-md bg-blue-700"
+                        style={{ height: `${height}%` }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-3 flex justify-between text-xs font-semibold text-slate-600">
+                  <span>Mon</span>
+                  <span>Tue</span>
+                  <span>Wed</span>
+                  <span>Thu</span>
+                  <span>Fri</span>
+                  <span>Sat</span>
+                  <span>Sun</span>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-900">
+                    Inventory Management
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-slate-600">
+                    Products, stock and sales in one place
+                  </p>
+                </div>
+
+                <span className="text-2xl font-bold text-blue-800">↗</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="bg-white px-6 py-20 md:px-16">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center">
+            <p className="text-sm font-bold uppercase tracking-widest text-blue-800">
+              What StockWise Offers
+            </p>
+
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950">
+              Everything You Need to Manage Your Business
+            </h2>
+
+            <p className="mt-4 text-base text-slate-700">
+              Simple tools to help you manage your daily operations.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => (
+              <div
+                key={feature.title}
+                className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-400 hover:shadow-lg"
+              >
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 text-blue-800 shadow-sm">
+                  {feature.icon}
+                </div>
+
+                <h3 className="text-lg font-bold text-slate-950">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-slate-700">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="bg-blue-950 px-6 py-20 text-center text-white">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-widest text-blue-200">
+            Get Started with StockWise
+          </p>
+
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+            Ready to Manage Your Inventory?
+          </h2>
+
+          <p className="mx-auto mt-5 max-w-xl leading-7 text-blue-100">
+            Bring your product management, inventory tracking, sales
+            and business reports together in one convenient workspace.
+          </p>
+
+          <Link
+            href="/login"
+            style={{ backgroundColor: "#ffffff", color: "#1e3a8a" }}
+            className="mt-8 inline-flex items-center justify-center rounded-xl border-2 border-white px-8 py-4 text-base font-extrabold shadow-xl transition hover:-translate-y-1 hover:!bg-blue-100"
+          >
+            Log In to StockWise →
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 bg-slate-950 px-6 py-8 md:px-16">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
+          <div>
+            <p className="text-lg font-extrabold text-white">StockWise</p>
+            <p className="mt-1 text-xs font-medium text-slate-300">
+              Inventory & Sales Management System
+            </p>
+          </div>
+
+          <p className="text-center text-xs text-slate-300">
+            © 2026 StockWise. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </main>
   );
 }
