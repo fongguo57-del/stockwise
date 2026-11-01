@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import StockWiseLogo from "@/components/StockWiseLogo";
 
 const features = [
   {
@@ -99,9 +100,9 @@ export default function Home() {
     <main className="min-h-screen bg-white text-slate-950">
       {/* Navigation */}
       <nav className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5 md:px-16">
-        <h1 className="text-2xl font-extrabold tracking-tight text-blue-800">
-          StockWise
-        </h1>
+        <Link href="/" aria-label="StockWise Home">
+          <StockWiseLogo iconSize={44} />
+        </Link>
 
         <div className="flex items-center gap-6">
           <a
@@ -336,8 +337,12 @@ export default function Home() {
       <footer className="border-t border-slate-800 bg-slate-950 px-6 py-8 md:px-16">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
           <div>
-            <p className="text-lg font-extrabold text-white">StockWise</p>
-            <p className="mt-1 text-xs font-medium text-slate-300">
+            <StockWiseLogo
+              light
+              iconSize={48}
+              textSize="text-2xl"
+            />
+            <p className="mt-2 text-xs font-medium text-slate-300">
               Inventory & Sales Management System
             </p>
           </div>
