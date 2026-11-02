@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import StockWiseLogo from "@/components/StockWiseLogo";
 
 const navItems = [
   { icon: "▦", label: "Dashboard", href: "/dashboard" },
@@ -31,18 +32,10 @@ export default function Sidebar() {
   return (
     <aside className="flex w-full shrink-0 flex-col bg-slate-950 p-5 text-white md:sticky md:top-0 md:h-screen md:w-64">
       <Link href="/dashboard" className="mb-8 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold">
-          S
-        </div>
-
-        <div>
-          <h1 className="text-xl font-bold tracking-tight">
-            StockWise
-          </h1>
-          <p className="text-xs text-slate-400">
+        <StockWiseLogo light={true} iconSize={32} textSize="text-lg" /> 
+        <p className="text-xs text-slate-400">
             Inventory Management
           </p>
-        </div>
       </Link>
 
       <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">

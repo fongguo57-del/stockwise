@@ -12,7 +12,7 @@ StockWise is deployed using Vercel and connected to Supabase.
 
 - **Authentication:** Secure sign-in and protected application pages.
 - **Role-Based Access Control:** Supports Admin and Staff roles with different permissions.
-- **Product Management:** View, add, edit, delete, and manage products according to user permissions.
+- **Product Management:** View, add, edit, and manage products according to user permissions.
 - **Stock Movements:** Track stock-in activities, sales deductions, and stock adjustments.
 - **Sales Management:** Create sales transactions and automatically update inventory quantities.
 - **Reports:** Review sales performance, completed orders, top-selling products, and inventory value.
@@ -30,15 +30,13 @@ StockWise is deployed using Vercel and connected to Supabase.
 - Git and GitHub
 - Vercel
 
-## Prerequisites
+## Getting Started
 
-Install the following before running StockWise locally:
+### Prerequisites
 
 - Node.js and npm
 - A Supabase project
 - Git (optional, for version control)
-
-## Getting Started
 
 ### 1. Clone the Repository
 
@@ -55,7 +53,7 @@ npm install
 
 ### 3. Configure Environment Variables
 
-Create a `.env.local` file in the project root directory and add your Supabase project credentials:
+Create a `.env.local` file in the project root directory:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
@@ -72,11 +70,9 @@ Replace the placeholder values with the corresponding values from your Supabase 
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open http://localhost:3000 in your browser.
 
 ### 5. Build for Production
-
-To verify the production build:
 
 ```bash
 npm run build
@@ -88,32 +84,39 @@ To start the production server after a successful build:
 npm run start
 ```
 
+## Demo Accounts
+
+Two demo roles are available for application evaluation:
+
+| Account | Role | Access |
+|---|---|---|
+| Demo Admin | Admin | Product management, inventory, sales and reports |
+| Demo Staff | Staff | Product viewing, stock adjustments, sales and reports |
+
+**Login instructions:**
+
+1. Visit the deployed application.
+2. Select **Log In**.
+3. Use the demo credentials provided separately for evaluation.
+
 ## User Roles and Permissions
 
 ### Admin
 
-The Admin role has access to administrative product management functions and the relevant inventory, sales, and reporting features.
-
-Admin permissions include:
-
 - View products.
 - Add new products.
 - Edit existing products.
-- Delete products.
+- Delete products where database relationships permit.
 - Adjust stock quantities.
 - Process sales.
 - Access reports.
 
 ### Staff
 
-The Staff role is designed for daily operational activities.
-
-Staff permissions include:
-
 - View products.
 - Adjust stock quantities.
 - Process sales.
-- Access permitted application features.
+- Access reports.
 
 Administrative product management actions, such as adding, editing, and deleting products, are restricted to Admin users.
 
@@ -140,7 +143,9 @@ The database includes the following main tables:
 
 Row Level Security (RLS), role validation, and database-side functions are used to protect supported operations and maintain inventory consistency.
 
-The application also includes validation for stock adjustments and sales transactions to help prevent invalid inventory operations.
+The application includes validation for stock adjustments and sales transactions to help prevent invalid inventory operations and negative stock quantities.
+
+Products referenced by historical records may be protected from deletion to preserve transaction history.
 
 Private credentials and environment variables are excluded from source control.
 

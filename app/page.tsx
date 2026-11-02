@@ -6,18 +6,11 @@ const features = [
   {
     title: "Product Management",
     description:
-      "Manage product details, categories, pricing and inventory information in one place.",
+      "Manage computer products and accessories, including product details, categories, pricing and stock information.",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-7 w-7"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        className="h-7 w-7" aria-hidden="true">
         <path d="m12 3 9 5-9 5-9-5 9-5Z" />
         <path d="m3 8 9 5 9-5" />
         <path d="M3 8v9l9 5 9-5V8" />
@@ -28,18 +21,11 @@ const features = [
   {
     title: "Inventory Tracking",
     description:
-      "Monitor stock levels, record stock movements and identify low-stock products.",
+      "Monitor available stock, record incoming products and stock movements, and identify items that need restocking.",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-7 w-7"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        className="h-7 w-7" aria-hidden="true">
         <path d="M4 19V5" />
         <path d="M4 19h17" />
         <rect x="7" y="11" width="3" height="5" rx="0.5" />
@@ -51,18 +37,11 @@ const features = [
   {
     title: "Sales Management",
     description:
-      "Create sales transactions and keep track of your business sales history.",
+      "Record customer purchases, process sales transactions and maintain a history of products sold by the store.",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-7 w-7"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        className="h-7 w-7" aria-hidden="true">
         <path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" />
         <circle cx="10" cy="20" r="1" />
         <circle cx="18" cy="20" r="1" />
@@ -74,18 +53,11 @@ const features = [
   {
     title: "Business Reports",
     description:
-      "Review sales performance, revenue and inventory information through reports.",
+      "Review store revenue, sales performance and inventory information to support everyday business decisions.",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="h-7 w-7"
-        aria-hidden="true"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        className="h-7 w-7" aria-hidden="true">
         <path d="M4 19V5" />
         <path d="M4 19h17" />
         <path d="m7 15 4-4 3 2 6-7" />
@@ -109,7 +81,7 @@ export default function Home() {
             href="#features"
             className="hidden text-sm font-semibold text-slate-700 transition hover:text-blue-800 sm:block"
           >
-            Features
+            System Features
           </a>
 
           <Link
@@ -117,7 +89,7 @@ export default function Home() {
             style={{ backgroundColor: "#1e3a8a", color: "#ffffff" }}
             className="rounded-lg px-5 py-2.5 text-sm font-bold transition hover:!bg-blue-950"
           >
-            Log In
+            Employee Login
           </Link>
         </div>
       </nav>
@@ -128,20 +100,20 @@ export default function Home() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-blue-800 shadow-sm">
               <span className="h-2 w-2 rounded-full bg-blue-700" />
-              Inventory & Sales Management
+              Computer Store Management System
             </div>
 
             <h2 className="mt-7 max-w-2xl text-4xl font-extrabold leading-tight tracking-tight text-slate-950 md:text-6xl">
-              Take Control of Your
+              Manage Your
               <span className="block text-blue-800">
-                Business Inventory.
+                Computer Store Smarter.
               </span>
             </h2>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-700 md:text-lg">
-              Manage products, monitor stock levels, record sales and
-              understand your business performance with StockWise —
-              all in one simple workspace.
+              StockWise helps our store manage computer products and
+              accessories, monitor inventory, record daily sales and
+              review business performance in one convenient system.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-4">
@@ -150,21 +122,21 @@ export default function Home() {
                 style={{ backgroundColor: "#1e3a8a", color: "#ffffff" }}
                 className="inline-flex items-center rounded-xl px-7 py-3.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 hover:!bg-blue-950"
               >
-                Get Started <span className="ml-2">→</span>
+                Employee Login <span className="ml-2">→</span>
               </Link>
 
               <a
                 href="#features"
                 className="rounded-xl border-2 border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-slate-800 transition hover:border-blue-700 hover:bg-blue-50 hover:text-blue-900"
               >
-                Explore Features
+                Explore System
               </a>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-700">
               <span>✓ Product Management</span>
               <span>✓ Stock Tracking</span>
-              <span>✓ Sales Reports</span>
+              <span>✓ Sales Records</span>
             </div>
           </div>
 
@@ -177,7 +149,7 @@ export default function Home() {
               <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
                   <p className="text-sm font-extrabold text-slate-950">
-                    StockWise Overview
+                    Computer Store Overview
                   </p>
                   <p className="mt-1 text-xs font-medium text-slate-600">
                     Illustrative dashboard preview
@@ -198,7 +170,7 @@ export default function Home() {
                     128
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
-                    Sample value
+                    Illustrative value
                   </p>
                 </div>
 
@@ -210,7 +182,7 @@ export default function Home() {
                     RM 8.4k
                   </p>
                   <p className="mt-1 text-xs font-medium text-blue-800">
-                    Sample value
+                    Illustrative value
                   </p>
                 </div>
               </div>
@@ -218,7 +190,7 @@ export default function Home() {
               <div className="mt-5 rounded-xl border border-slate-200 p-4">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-bold text-slate-900">
-                    Inventory Activity
+                    Store Activity
                   </p>
                   <span className="text-xs font-semibold text-slate-500">
                     Demo data
@@ -227,10 +199,7 @@ export default function Home() {
 
                 <div className="mt-6 flex h-32 items-end gap-3">
                   {[45, 70, 55, 90, 65, 100, 75].map((height, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-1 items-end"
-                    >
+                    <div key={index} className="flex flex-1 items-end">
                       <div
                         className="w-full rounded-t-md bg-blue-700"
                         style={{ height: `${height}%` }}
@@ -253,10 +222,10 @@ export default function Home() {
               <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <div>
                   <p className="text-sm font-bold text-slate-900">
-                    Inventory Management
+                    Daily Store Operations
                   </p>
                   <p className="mt-1 text-xs font-medium text-slate-600">
-                    Products, stock and sales in one place
+                    Products, inventory and sales in one place
                   </p>
                 </div>
 
@@ -272,15 +241,15 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
             <p className="text-sm font-bold uppercase tracking-widest text-blue-800">
-              What StockWise Offers
+              Store Operations
             </p>
 
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950">
-              Everything You Need to Manage Your Business
+              Tools for Managing Our Computer Store
             </h2>
 
             <p className="mt-4 text-base text-slate-700">
-              Simple tools to help you manage your daily operations.
+              Supporting our daily product, inventory and sales operations.
             </p>
           </div>
 
@@ -311,16 +280,16 @@ export default function Home() {
       <section className="bg-blue-950 px-6 py-20 text-center text-white">
         <div className="mx-auto max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-widest text-blue-200">
-            Get Started with StockWise
+            StockWise Store System
           </p>
 
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            Ready to Manage Your Inventory?
+            Ready for Your Daily Store Operations?
           </h2>
 
           <p className="mx-auto mt-5 max-w-xl leading-7 text-blue-100">
-            Bring your product management, inventory tracking, sales
-            and business reports together in one convenient workspace.
+            Access product management, inventory tracking, sales
+            records and business reports through one central system.
           </p>
 
           <Link
@@ -328,8 +297,12 @@ export default function Home() {
             style={{ backgroundColor: "#ffffff", color: "#1e3a8a" }}
             className="mt-8 inline-flex items-center justify-center rounded-xl border-2 border-white px-8 py-4 text-base font-extrabold shadow-xl transition hover:-translate-y-1 hover:!bg-blue-100"
           >
-            Log In to StockWise →
+            Employee Login →
           </Link>
+
+          <p className="mt-4 text-xs text-blue-200">
+            For authorised store employees
+          </p>
         </div>
       </section>
 
@@ -337,13 +310,9 @@ export default function Home() {
       <footer className="border-t border-slate-800 bg-slate-950 px-6 py-8 md:px-16">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 sm:flex-row">
           <div>
-            <StockWiseLogo
-              light
-              iconSize={48}
-              textSize="text-2xl"
-            />
+            <StockWiseLogo light iconSize={48} textSize="text-2xl" />
             <p className="mt-2 text-xs font-medium text-slate-300">
-              Inventory & Sales Management System
+              Computer Store Inventory & Sales Management System
             </p>
           </div>
 
